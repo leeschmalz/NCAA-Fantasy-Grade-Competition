@@ -1,0 +1,822 @@
+
+
+<!DOCTYPE html>
+<HTML>
+<HEAD><script type="text/javascript">/* <![CDATA[ */_cf_loadingtexthtml="<img alt=' ' src='/CFIDE/scripts/ajax/resources/cf/images/loading.gif'/>";
+_cf_contextpath="";
+_cf_ajaxscriptsrc="/CFIDE/scripts/ajax";
+_cf_jsonprefix='//';
+_cf_websocket_port=8577;
+_cf_flash_policy_port=1243;
+_cf_clientid='18350E42F6B810F7B5136BD6BBE57BAE';/* ]]> */</script><script type="text/javascript" src="/CFIDE/scripts/ajax/messages/cfmessage.js"></script>
+<script type="text/javascript" src="/CFIDE/scripts/ajax/package/cfajax.js"></script>
+<script type="text/javascript" src="/CFIDE/scripts/ajax/yui/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="/CFIDE/scripts/ajax/yui/container/container-min.js"></script>
+<script type="text/javascript" src="/CFIDE/scripts/ajax/yui/animation/animation-min.js"></script>
+<script type="text/javascript" src="/CFIDE/scripts/ajax/package/cftooltip.js"></script>
+<script type="text/javascript" src="/CFIDE/scripts/cfform.js"></script>
+<script type="text/javascript" src="/CFIDE/scripts/masks.js"></script>
+<script type="text/javascript" src="/CFIDE/scripts/cfformhistory.js"></script>
+<link rel="stylesheet" type="text/css" href="/CFIDE/scripts/ajax/resources/yui/yui.css" />
+
+
+<TITLE>FantasyGrade.com</TITLE>
+
+
+<meta name="description" content="FantasyGrade.com offers users the ability host their College Wrestling Championship Brackets by managing users, rosters and standings electronically.  We offer live scoring during each session of the College Wrestling Championships and league chat options to talk smack througout the tournament.">
+<meta name="keywords" content="wrestling,apparel,gear,sports,college wrestling,championship,office pool,fantasy sports,wrestling" />
+
+<script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script>
+
+
+<link rel="stylesheet" type="text/css" href="/assets/css/square_payment_form.css"/>
+<link rel="stylesheet" href="/assets/css/pure-release-0.6.0/pure-min.css">
+<link rel="stylesheet" href="/assets/css/pure-release-0.6.0/buttons-min.css">
+<link rel="stylesheet" href="/assets/css/pure-release-0.6.0/forms-min.css">
+<link rel="stylesheet" href="/assets/css/cwop.css">
+<LINK REL="SHORTCUT ICON" HREF="/favicon.ico" />
+
+
+    <style scoped>
+        .button-success,
+        .button-error,
+        .button-warning,
+		.pure-button-primary,
+        .pure-button-secondary {
+            color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+        .button-success {
+            background: rgb(28, 184, 65); /* this is a green */
+        }
+        .button-error {
+            background: rgb(160, 91, 78); /* this is a maroon */
+        }
+        .button-warning {
+            background: rgb(223, 117, 20); /* this is an orange */
+        }
+        .pure-button-secondary {
+            background: rgb(66, 184, 221); /* this is a light blue */
+        }
+        .pure-button-primary {
+            background: rgb(0, 40, 85); /* this is a light blue */
+        }
+    </style>
+<style media="screen" type="text/css">
+.fb_iframe_widget span
+{
+    vertical-align: baseline !important;
+}
+</style>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-9756598-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+<script>
+	function chatreload() { ColdFusion.navigate('dsp_leagueChat.cfm','leagueChat'); }
+	function chatsetup() { setInterval(chatreload,10000); }
+</script>
+<script>
+
+	// Logout from facebook
+	function fbLogout() {
+		FB.getLoginStatus(function (response) {
+		if (response && response.status === 'connected') {
+		    FB.logout(function() {
+		        window.location.href = window.location.origin+'/index.cfm?logout=true';
+		    });
+	      }
+		});
+	}
+
+	// Facebook login with JavaScript SDK
+	function fbLogin() {
+	    FB.login(function (response) {
+	        console.log(response);
+	        if (response.authResponse) {
+	            // Get and display the user profile data
+	            	    FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email'},function (userData) {
+	            	    	console.log(userData);
+
+	            	    	window.location.href=document.location.origin+"/view/account/fbLogin.cfm?fbId="+btoa(userData.id)+"&fbFirst="+btoa(userData.first_name)+"&fbLast="+btoa(userData.last_name)+"&fbEmail="+btoa(userData.email)+"&fbAT="+btoa(response.authResponse.accessToken)+"&fbET="+btoa(response.authResponse.data_access_expiration_time)+"&fbEI="+btoa(response.authResponse.expiresIn)+"&fbRI="+btoa(response.authResponse.reauthorize_required_in)+"&fbSR="+btoa(response.authResponse.signedRequest);
+					    });
+	        } else {
+	            //document.getElementById('status').innerHTML = 'User cancelled login or did not fully authorize.';
+	        }
+	    }, {scope: 'public_profile,email'});
+	}
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '988249144677136', // FB App ID
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.8' // use graph api version 2.8
+    });
+
+    FB.AppEvents.logPageView();
+
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+
+</script>
+
+<script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script>
+
+
+<script type="text/javascript">/* <![CDATA[ */
+	ColdFusion.Ajax.importTag('CFAJAXPROXY');
+/* ]]> */</script>
+
+<script type="text/javascript">/* <![CDATA[ */
+	ColdFusion.Ajax.importTag('CFTOOLTIP');
+/* ]]> */</script>
+
+<script type="text/javascript">/* <![CDATA[ */
+	ColdFusion.Ajax.importTag('CFFORM');
+/* ]]> */</script>
+
+<script type="text/javascript">/* <![CDATA[ */
+	
+	
+	YAHOO.util.Event.addListener("cf_tooltip_39397399053901","mouseover",ColdFusion.Tooltip.getToolTip,{"_cf_url":"/view/info/dsp_generalInfo.cfm?type=rosterImport","_cf_query":"","context":"cf_tooltip_39397399053901","hidedelay":250,"showdelay":200,"autodismissdelay":5000,"preventoverlap":"true"});
+/* ]]> */</script>
+<script type="text/javascript">
+<!--
+    _CF_checkeditRosterForm = function(_CF_this)
+    {
+        //reset on submit
+        _CF_error_exists = false;
+        _CF_error_messages = new Array();
+        _CF_error_fields = new Object();
+        _CF_FirstErrorField = null;
+
+
+        //display error messages and return success
+        if( _CF_error_exists )
+        {
+            if( _CF_error_messages.length > 0 )
+            {
+                // show alert() message
+                _CF_onErrorAlert(_CF_error_messages);
+                // set focus to first form error, if the field supports js focus().
+                if( _CF_this[_CF_FirstErrorField].type == "text" )
+                { _CF_this[_CF_FirstErrorField].focus(); }
+
+            }
+            return false;
+        }else {
+            return true;
+        }
+    }
+//-->
+</script>
+</HEAD>
+
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v4.0&appId=988249144677136&autoLogAppEvents=1"></script>
+<BODY style="background-color:#FFFFFF;">
+
+
+
+
+<div id="fb-root"></div>
+
+
+<table style="width:99%;">
+<tr>
+	<td style="width:15%;padding:10px;vertical-align:top;">
+		
+<table style="width:100%;">
+	<tbody style="font-size:20px;text-align:center;vertical-align:top;">
+	<tr><td><a href="https://www.fantasygrade.com/"><img src="/assets/images/FantasyGrade_banner.jpg" style="width:99%;background-color:#F5F5F5;"></a>
+
+
+
+	</td></tr>
+	
+		<tr><td style="height:30px;padding:2px;">Welcome, leeschmalz</td></tr>
+		<tr><td style="height:30px;padding:2px;"><a class="pure-button pure-button-primary" href="/index.cfm" style="width:99%; height:99%;">My Rosters</a></td></tr>
+		
+		
+		<tr><td style="height:30px;padding:2px;"><a class="pure-button pure-button" href="/view/account/dsp_myAccount.cfm" style="width:99%; height:99%;">My Account</a></td></tr>
+	
+		<tr><td style="height:30px;padding:2px;"><a class="pure-button button-success" href="/view/league/dsp_addLeague.cfm" style="width:99%; height:99%;">Create New League</a></td></tr>
+		<tr><td style="height:30px;padding:2px;"><a class="pure-button button-success" href="/view/fwnc/dsp_fwncOnlineEventPayment.cfm" style="width:99%; height:99%;">Enter 2020 FWNC</a></td></tr>
+
+		<tr><td style="height:30px;padding:2px;"><a class="pure-button button" href="/view/info/dsp_leagueRulesStandard.cfm" style="width:99%; height:99%;">View Standard Rules</a></td></tr>
+		<tr><td style="height:30px;padding:2px;"><a class="pure-button pure-button" href="/view/info/dsp_history.cfm" style="width:99%; height:99%;">Past Champions</a></td></tr>
+		<tr><td style="height:30px;padding:2px;"><a class="pure-button pure-button" href="/view/company/dsp_contactUs.cfm" style="width:99%; height:99%;">Contact Us</a></td></tr>
+		
+	
+	
+		<tr><td style="height:30px;padding:2px;"><a class="pure-button button-error" href="https://www.fantasygrade.com?logout=true" style="width:99%; height:99%;">Logout</a></td></tr>
+	
+		<tr><td style="height:30px;padding:2px;"><a href="https://twitter.com/fantasygrade?ref_src=twsrc%5Etfw" style="margin: auto;" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @fantasygrade</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></td></tr>
+		<tr><td style="height:30px;padding:2px;"><div class="fb-like" data-href="https://www.facebook.com/fantasycollegewrestling/" data-width="200	" data-layout="button_count" data-action="like" data-size="large" data-show-faces="false" data-share="false"></div></td></tr>
+	</td>
+	</tr>
+	<tbody>
+</table>
+
+	</td>
+
+	<td style="width:85%;padding:10px;vertical-align:top;">
+	
+<table style="width:100%;"><tbody>
+	<tr><td style="text-align:center;vertical-align:center; height:100px;margin:5px;width:90%;">
+
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Main Header -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-4316490635374713"
+     data-ad-slot="3688479370"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+</td>
+
+<td style="width:10%;text-align:center;vertical-align:middle;"><a href="https://www.fantasygrade.com/view/fwnc/dsp_fwncOnlineEvent.cfm">
+	<img src="https://www.fantasygrade.com/assets/images/fwnc_small.jpg" style="width:60%;background-color:#F5F5F5;"></a></td>
+</tr></tbody></table>
+
+
+<script type="text/javascript">
+function setCurrentSalaryCap() {
+	var obj1 = document.getElementById("weightClass1");
+    var obj2 = document.getElementById("weightClass2");
+    var obj3 = document.getElementById("weightClass3");
+    var obj4 = document.getElementById("weightClass4");
+    var obj5 = document.getElementById("weightClass5");
+    var obj6 = document.getElementById("weightClass6");
+    var obj7 = document.getElementById("weightClass7");
+    var obj8 = document.getElementById("weightClass8");
+    var obj9 = document.getElementById("weightClass9");
+    var obj10 = document.getElementById("weightClass10");
+    var objTCC = document.getElementById("totalCapCost");
+	var salCap = document.getElementById("salaryCap");
+
+    var w1txt = obj1.options[obj1.selectedIndex].text;
+    var w2txt = obj2.options[obj2.selectedIndex].text;
+    var w3txt = obj3.options[obj3.selectedIndex].text;
+    var w4txt = obj4.options[obj4.selectedIndex].text;
+    var w5txt = obj5.options[obj5.selectedIndex].text;
+    var w6txt = obj6.options[obj6.selectedIndex].text;
+    var w7txt = obj7.options[obj7.selectedIndex].text;
+    var w8txt = obj8.options[obj8.selectedIndex].text;
+    var w9txt = obj9.options[obj9.selectedIndex].text;
+    var w10txt = obj10.options[obj10.selectedIndex].text;
+	var salCaptxt = salCap.innerHTML;
+
+	if(w1txt.lastIndexOf("--") > 0) {w1txt="0";} else {w1txt = w1txt.substring(w1txt.lastIndexOf(":")+1,w1txt.length-1);}
+	if(w2txt.lastIndexOf("--") > 0) {w2txt="0";} else {w2txt = w2txt.substring(w2txt.lastIndexOf(":")+1,w2txt.length-1);}
+	if(w3txt.lastIndexOf("--") > 0) {w3txt="0";} else {w3txt = w3txt.substring(w3txt.lastIndexOf(":")+1,w3txt.length-1);}
+	if(w4txt.lastIndexOf("--") > 0) {w4txt="0";} else {w4txt = w4txt.substring(w4txt.lastIndexOf(":")+1,w4txt.length-1);}
+	if(w5txt.lastIndexOf("--") > 0) {w5txt="0";} else {w5txt = w5txt.substring(w5txt.lastIndexOf(":")+1,w5txt.length-1);}
+	if(w6txt.lastIndexOf("--") > 0) {w6txt="0";} else {w6txt = w6txt.substring(w6txt.lastIndexOf(":")+1,w6txt.length-1);}
+	if(w7txt.lastIndexOf("--") > 0) {w7txt="0";} else {w7txt = w7txt.substring(w7txt.lastIndexOf(":")+1,w7txt.length-1);}
+	if(w8txt.lastIndexOf("--") > 0) {w8txt="0";} else {w8txt = w8txt.substring(w8txt.lastIndexOf(":")+1,w8txt.length-1);}
+	if(w9txt.lastIndexOf("--") > 0) {w9txt="0";} else {w9txt = w9txt.substring(w9txt.lastIndexOf(":")+1,w9txt.length-1);}
+	if(w10txt.lastIndexOf("--") > 0) {w10txt="0";} else {w10txt = w10txt.substring(w10txt.lastIndexOf(":")+1,w10txt.length-1);}
+
+	var tcc = (parseInt(w1txt)+parseInt(w2txt)+parseInt(w3txt)+parseInt(w4txt)+parseInt(w5txt)+parseInt(w6txt)+parseInt(w7txt)+parseInt(w8txt)+parseInt(w9txt)+parseInt(w10txt));
+
+	if(tcc > parseInt(salCaptxt)){
+		objTCC.style.color = "Red";
+		objTCC.innerHTML = 'Current Salary Cap: ' + tcc + ' (OVER)';
+	}
+	else {
+		objTCC.style.color = "Green";
+		objTCC.innerHTML = 'Current Salary Cap: ' + tcc + ' (OK)';
+	}
+}
+</script>
+
+<form name="editRosterForm" id="editRosterForm" action="&#x2f;view&#x2f;league&#x2f;dsp_editRoster.cfm?lrid=13943" method="POST" class="pure-form" onsubmit="return _CF_checkeditRosterForm(this)">
+
+<table style="width:100%;">
+
+<tr>
+
+
+<td style="text-align:center;vertical-align:top;">
+	<table class="pure-table pure-table-horizontal" style="margin:0px auto; width:100%;">
+	<thead style="font-size:14px;">
+		<tr>
+			<th style="width:33%;text-align:center;">Roster Deadline</th>
+			<th style="width:33%;text-align:center;">League Salary Cap</th>
+			<th style="width:33%;text-align:center;">Rank/Cap Source</th>
+		</tr>
+	</thead>
+	
+		<tbody>
+			<tr>
+				<td style="color:red;font-weight:bold;text-align:center;">March 19, 2020 12:00:00 PM EST</td>
+				<td style="text-align:center;"><div id="salaryCap">1000</div></td>
+				<td style="text-align:center;"><a href="/view/league/dsp_averageRankings.cfm">AVG</a></td>
+			</tr>
+		</tbody>
+	
+	</table>
+
+	<table class="pure-table pure-table-horizontal" style="margin:0px auto; width:100%;">
+	<thead style="font-size:14px;">
+		<tr><th colspan="4" style="background-color:#375172; color:white; text-align:left;">2020 Fantasy Wrestling National Championship - Edit Roster</th></tr>
+	</thead>
+	<tbody>
+	
+
+		<tr>
+			<td style="width:10%;text-align:center;">125</td>
+			<td style="width:40%;"><select name="weightClass1" id="weightClass1" style="width:90%;"  onchange="javascript:setCurrentSalaryCap();" >
+<option id="0" value="0">-- Select 125 --</option>    <option value="6461">Spencer Lee &#x28;Rank&#x3a; 1 - Cap&#x3a;196&#x29;</option>
+    <option value="6427">Pat Glory &#x28;Rank&#x3a; 2 - Cap&#x3a;148&#x29;</option>
+    <option value="6417">Nicholas Piccininni &#x28;Rank&#x3a; 3 - Cap&#x3a;139&#x29;</option>
+    <option value="6311">Jack Mueller &#x28;Rank&#x3a; 4 - Cap&#x3a;129&#x29;</option>
+    <option value="6271">Drew Hildebrandt &#x28;Rank&#x3a; 5 - Cap&#x3a;117&#x29;</option>
+    <option value="6263">Devin Schroder &#x28;Rank&#x3a; 6 - Cap&#x3a;107&#x29;</option>
+    <option value="6214">Brandon Paetzell &#x28;Rank&#x3a; 7 - Cap&#x3a;93&#x29;</option>
+    <option value="6212">Brandon Courtney &#x28;Rank&#x3a; 8 - Cap&#x3a;87&#x29;</option>
+    <option value="6404">Michael DeAugustino &#x28;Rank&#x3a; 9 - Cap&#x3a;78&#x29;</option>
+    <option value="6327">Jakob Camacho &#x28;Rank&#x3a; 10 - Cap&#x3a;71&#x29;</option>
+    <option value="6185">Alex Mackall &#x28;Rank&#x3a; 11 - Cap&#x3a;59&#x29;</option>
+    <option value="6386">Luke Werner &#x28;Rank&#x3a; 12 - Cap&#x3a;45&#x29;</option>
+    <option value="6403">Michael Colaiocco &#x28;Rank&#x3a; 13 - Cap&#x3a;38&#x29;</option>
+    <option value="6310">Jack Medley &#x28;Rank&#x3a; 14 - Cap&#x3a;31&#x29;</option>
+    <option value="6368">Kilian Cardinale &#x28;Rank&#x3a; 15 - Cap&#x3a;26&#x29;</option>
+    <option value="6316">Jacob Schwarm &#x28;Rank&#x3a; 16 - Cap&#x3a;10&#x29;</option>
+    <option value="6341">Joey Prata &#x28;Rank&#x3a; 17 - Cap&#x3a;10&#x29;</option>
+    <option value="6430">Patrick McKee &#x28;Rank&#x3a; 18 - Cap&#x3a;10&#x29;</option>
+    <option value="6489">Trey Chalifoux &#x28;Rank&#x3a; 19 - Cap&#x3a;10&#x29;</option>
+    <option value="6379">Liam Cronin &#x28;Rank&#x3a; 20 - Cap&#x3a;10&#x29;</option>
+    <option value="6416">Nic Aguilar &#x28;Rank&#x3a; 21 - Cap&#x3a;5&#x29;</option>
+    <option value="6290">Gage Curry &#x28;Rank&#x3a; 22 - Cap&#x3a;5&#x29;</option>
+    <option value="6359">Justin Cardani &#x28;Rank&#x3a; 23 - Cap&#x3a;5&#x29;</option>
+    <option value="6340">Joe Manchio &#x28;Rank&#x3a; 24 - Cap&#x3a;5&#x29;</option>
+    <option value="6237">Christian Moody &#x28;Rank&#x3a; 25 - Cap&#x3a;5&#x29;</option>
+    <option value="6387">Malik Heinselman &#x28;Rank&#x3a; 26 - Cap&#x3a;5&#x29;</option>
+    <option value="6280">Edwin Thomsen &#x28;Rank&#x3a; 27 - Cap&#x3a;5&#x29;</option>
+    <option value="6287">Fabian Gutierrez &#x28;Rank&#x3a; 28 - Cap&#x3a;5&#x29;</option>
+    <option value="6372">Korbin Meink &#x28;Rank&#x3a; 29 - Cap&#x3a;5&#x29;</option>
+    <option value="6380">Logan Griffin &#x28;Rank&#x3a; 30 - Cap&#x3a;5&#x29;</option>
+    <option value="6313">Jackson DiSario &#x28;Rank&#x3a; 31 - Cap&#x3a;5&#x29;</option>
+    <option value="6268">Dominic LaJoie &#x28;Rank&#x3a; 32 - Cap&#x3a;5&#x29;</option>
+    <option value="6200">Antonio Mininno &#x28;Rank&#x3a; 33 - Cap&#x3a;5&#x29;</option>
+</select></td>
+			<td style="width:10%;text-align:center;">165</td>
+			<td style="width:10%;text-align:center;"><select name="weightClass6" id="weightClass6" style="width:90%;"  onchange="javascript:setCurrentSalaryCap();" >
+<option id="0" value="0">-- Select 165 --</option>    <option value="6186">Alex Marinelli &#x28;Rank&#x3a; 1 - Cap&#x3a;196&#x29;</option>
+    <option value="6496">Vincenzo Joseph &#x28;Rank&#x3a; 2 - Cap&#x3a;148&#x29;</option>
+    <option value="6458">Shane Griffith &#x28;Rank&#x3a; 3 - Cap&#x3a;139&#x29;</option>
+    <option value="6308">Isaiah White &#x28;Rank&#x3a; 4 - Cap&#x3a;129&#x29;</option>
+    <option value="6485">Travis Wittlake &#x28;Rank&#x3a; 5 - Cap&#x3a;117&#x29;</option>
+    <option value="6286">Evan Wick &#x28;Rank&#x3a; 6 - Cap&#x3a;107&#x29;</option>
+    <option value="6357">Joshua Shields &#x28;Rank&#x3a; 7 - Cap&#x3a;93&#x29;</option>
+    <option value="6467">Tanner Skidgel &#x28;Rank&#x3a; 8 - Cap&#x3a;87&#x29;</option>
+    <option value="6256">David McFadden &#x28;Rank&#x3a; 9 - Cap&#x3a;78&#x29;</option>
+    <option value="6476">Thomas Bullard &#x28;Rank&#x3a; 10 - Cap&#x3a;71&#x29;</option>
+    <option value="6190">Andrew Fogarty &#x28;Rank&#x3a; 11 - Cap&#x3a;59&#x29;</option>
+    <option value="6325">Jake Wentzel &#x28;Rank&#x3a; 12 - Cap&#x3a;45&#x29;</option>
+    <option value="6284">Ethan Smith &#x28;Rank&#x3a; 13 - Cap&#x3a;38&#x29;</option>
+    <option value="6252">Dan Braunagel &#x28;Rank&#x3a; 14 - Cap&#x3a;31&#x29;</option>
+    <option value="6367">Kennedy Monday &#x28;Rank&#x3a; 15 - Cap&#x3a;26&#x29;</option>
+    <option value="6435">Quentin Perez &#x28;Rank&#x3a; 16 - Cap&#x3a;10&#x29;</option>
+    <option value="6505">Zach Hartman &#x28;Rank&#x3a; 17 - Cap&#x3a;10&#x29;</option>
+    <option value="6459">Shayne Oster &#x28;Rank&#x3a; 18 - Cap&#x3a;10&#x29;</option>
+    <option value="6225">Cael McCormick &#x28;Rank&#x3a; 19 - Cap&#x3a;10&#x29;</option>
+    <option value="6433">Philip Conigliaro &#x28;Rank&#x3a; 20 - Cap&#x3a;10&#x29;</option>
+    <option value="6491">Troy Keller &#x28;Rank&#x3a; 21 - Cap&#x3a;5&#x29;</option>
+    <option value="6464">Tanner Cook &#x28;Rank&#x3a; 22 - Cap&#x3a;5&#x29;</option>
+    <option value="6279">Ebed Jarrell &#x28;Rank&#x3a; 23 - Cap&#x3a;5&#x29;</option>
+    <option value="6309">Izzak Olejnik &#x28;Rank&#x3a; 24 - Cap&#x3a;5&#x29;</option>
+    <option value="6272">Drew Hughes &#x28;Rank&#x3a; 25 - Cap&#x3a;5&#x29;</option>
+    <option value="6204">Bailee O&#x60;Reilly &#x28;Rank&#x3a; 26 - Cap&#x3a;5&#x29;</option>
+    <option value="6294">Grant Cuomo &#x28;Rank&#x3a; 27 - Cap&#x3a;5&#x29;</option>
+    <option value="6440">Ricky Stamm &#x28;Rank&#x3a; 28 - Cap&#x3a;5&#x29;</option>
+    <option value="6234">Chase Straw &#x28;Rank&#x3a; 29 - Cap&#x3a;5&#x29;</option>
+    <option value="6431">Peyton Mocco &#x28;Rank&#x3a; 30 - Cap&#x3a;5&#x29;</option>
+    <option value="6209">Bernie Truax &#x28;Rank&#x3a; 31 - Cap&#x3a;5&#x29;</option>
+    <option value="6226">Cam Coy &#x28;Rank&#x3a; 32 - Cap&#x3a;5&#x29;</option>
+    <option value="6494">Tyler Meisinger &#x28;Rank&#x3a; 33 - Cap&#x3a;5&#x29;</option>
+</select></td>
+		</tr>
+		<tr>
+			<td style="width:10%;text-align:center;">133</td>
+			<td style="width:40%;"><select name="weightClass2" id="weightClass2" style="width:90%;"  onchange="javascript:setCurrentSalaryCap();" >
+<option id="0" value="0">-- Select 133 --</option>    <option value="6453">Sebastian Rivera &#x28;Rank&#x3a; 1 - Cap&#x3a;196&#x29;</option>
+    <option value="6455">Seth Gross &#x28;Rank&#x3a; 2 - Cap&#x3a;148&#x29;</option>
+    <option value="6443">Roman Bravo-Young &#x28;Rank&#x3a; 3 - Cap&#x3a;139&#x29;</option>
+    <option value="6233">Charles Tucker &#x28;Rank&#x3a; 4 - Cap&#x3a;129&#x29;</option>
+    <option value="6201">Austin DeSanto &#x28;Rank&#x3a; 5 - Cap&#x3a;117&#x29;</option>
+    <option value="6407">Mickey Phillipi &#x28;Rank&#x3a; 6 - Cap&#x3a;107&#x29;</option>
+    <option value="6483">Travis Piotrowski &#x28;Rank&#x3a; 7 - Cap&#x3a;93&#x29;</option>
+    <option value="6423">Noah Gosner &#x28;Rank&#x3a; 8 - Cap&#x3a;87&#x29;</option>
+    <option value="6450">Sammy Alvarez &#x28;Rank&#x3a; 9 - Cap&#x3a;78&#x29;</option>
+    <option value="6228">Cameron Sykora &#x28;Rank&#x3a; 10 - Cap&#x3a;71&#x29;</option>
+    <option value="6412">Montorie Bridges &#x28;Rank&#x3a; 11 - Cap&#x3a;59&#x29;</option>
+    <option value="6441">Ridge Lovett &#x28;Rank&#x3a; 12 - Cap&#x3a;45&#x29;</option>
+    <option value="6262">Devan Turner &#x28;Rank&#x3a; 13 - Cap&#x3a;38&#x29;</option>
+    <option value="6413">Mosha Schwartz &#x28;Rank&#x3a; 14 - Cap&#x3a;31&#x29;</option>
+    <option value="6195">Anthony Madrigal &#x28;Rank&#x3a; 15 - Cap&#x3a;26&#x29;</option>
+    <option value="6473">Taylor LaMont &#x28;Rank&#x3a; 16 - Cap&#x3a;10&#x29;</option>
+    <option value="6480">Tim Rooney &#x28;Rank&#x3a; 17 - Cap&#x3a;10&#x29;</option>
+    <option value="6418">Nick Farro &#x28;Rank&#x3a; 18 - Cap&#x3a;10&#x29;</option>
+    <option value="6508">Zack Trampe &#x28;Rank&#x3a; 19 - Cap&#x3a;10&#x29;</option>
+    <option value="6188">Allan Hart &#x28;Rank&#x3a; 20 - Cap&#x3a;10&#x29;</option>
+    <option value="6261">Derek Spann &#x28;Rank&#x3a; 21 - Cap&#x3a;5&#x29;</option>
+    <option value="6439">Reece Witcraft &#x28;Rank&#x3a; 22 - Cap&#x3a;5&#x29;</option>
+    <option value="6383">Louie Hayes &#x28;Rank&#x3a; 23 - Cap&#x3a;5&#x29;</option>
+    <option value="6322">Jaime Hernandez &#x28;Rank&#x3a; 24 - Cap&#x3a;5&#x29;</option>
+    <option value="6265">DJ Fehlman &#x28;Rank&#x3a; 25 - Cap&#x3a;5&#x29;</option>
+    <option value="6334">Jarrett Trombley &#x28;Rank&#x3a; 26 - Cap&#x3a;5&#x29;</option>
+    <option value="6239">Codi Russell &#x28;Rank&#x3a; 27 - Cap&#x3a;5&#x29;</option>
+    <option value="6481">Todd Small &#x28;Rank&#x3a; 28 - Cap&#x3a;5&#x29;</option>
+    <option value="6245">Collin Gerardi &#x28;Rank&#x3a; 29 - Cap&#x3a;5&#x29;</option>
+    <option value="6312">Jack Skudlarczyk &#x28;Rank&#x3a; 30 - Cap&#x3a;5&#x29;</option>
+    <option value="6377">Lawrence Saenz &#x28;Rank&#x3a; 31 - Cap&#x3a;5&#x29;</option>
+    <option value="6192">Andrew Marten &#x28;Rank&#x3a; 32 - Cap&#x3a;5&#x29;</option>
+    <option value="6231">Casey Cobb &#x28;Rank&#x3a; 33 - Cap&#x3a;5&#x29;</option>
+</select></td>
+			<td style="width:10%;text-align:center;">174</td>
+			<td style="width:40%;"><select name="weightClass7" id="weightClass7" style="width:90%;"  onchange="javascript:setCurrentSalaryCap();" >
+<option id="0" value="0">-- Select 174 --</option>    <option value="6389">Mark Hall &#x28;Rank&#x3a; 1 - Cap&#x3a;196&#x29;</option>
+    <option value="6405">Michael Kemerer &#x28;Rank&#x3a; 2 - Cap&#x3a;148&#x29;</option>
+    <option value="6348">Jordan Kutler &#x28;Rank&#x3a; 3 - Cap&#x3a;139&#x29;</option>
+    <option value="6277">Dylan Lydy &#x28;Rank&#x3a; 4 - Cap&#x3a;129&#x29;</option>
+    <option value="6224">Bryce Steiert &#x28;Rank&#x3a; 5 - Cap&#x3a;117&#x29;</option>
+    <option value="6363">Kaleb Romero &#x28;Rank&#x3a; 6 - Cap&#x3a;107&#x29;</option>
+    <option value="6264">Devin Skatzka &#x28;Rank&#x3a; 7 - Cap&#x3a;93&#x29;</option>
+    <option value="6409">Mikey Labriola &#x28;Rank&#x3a; 8 - Cap&#x3a;87&#x29;</option>
+    <option value="6198">Anthony Valencia &#x28;Rank&#x3a; 9 - Cap&#x3a;78&#x29;</option>
+    <option value="6196">Anthony Mantanona &#x28;Rank&#x3a; 10 - Cap&#x3a;71&#x29;</option>
+    <option value="6352">Joseph Smith &#x28;Rank&#x3a; 11 - Cap&#x3a;59&#x29;</option>
+    <option value="6452">Samuel Colbray &#x28;Rank&#x3a; 12 - Cap&#x3a;45&#x29;</option>
+    <option value="6369">Kimball Bastian &#x28;Rank&#x3a; 13 - Cap&#x3a;38&#x29;</option>
+    <option value="6207">Ben Harvey &#x28;Rank&#x3a; 14 - Cap&#x3a;31&#x29;</option>
+    <option value="6351">Joseph Gunther &#x28;Rank&#x3a; 15 - Cap&#x3a;26&#x29;</option>
+    <option value="6253">Daniel Bullard &#x28;Rank&#x3a; 16 - Cap&#x3a;10&#x29;</option>
+    <option value="6460">Spencer Carey &#x28;Rank&#x3a; 17 - Cap&#x3a;10&#x29;</option>
+    <option value="6415">Neal Richards &#x28;Rank&#x3a; 18 - Cap&#x3a;10&#x29;</option>
+    <option value="6238">Clay Lautt &#x28;Rank&#x3a; 19 - Cap&#x3a;10&#x29;</option>
+    <option value="6299">Gregg Harvey &#x28;Rank&#x3a; 20 - Cap&#x3a;10&#x29;</option>
+    <option value="6248">Connor Flynn &#x28;Rank&#x3a; 21 - Cap&#x3a;5&#x29;</option>
+    <option value="6315">Jacob Oliver &#x28;Rank&#x3a; 22 - Cap&#x3a;5&#x29;</option>
+    <option value="6301">Hayden Hastings &#x28;Rank&#x3a; 23 - Cap&#x3a;5&#x29;</option>
+    <option value="6193">Andrew McNally &#x28;Rank&#x3a; 24 - Cap&#x3a;5&#x29;</option>
+    <option value="6378">Layne Malczewski &#x28;Rank&#x3a; 25 - Cap&#x3a;5&#x29;</option>
+    <option value="6477">Thomas Flitz &#x28;Rank&#x3a; 26 - Cap&#x3a;5&#x29;</option>
+    <option value="6257">Dean Sherry &#x28;Rank&#x3a; 27 - Cap&#x3a;5&#x29;</option>
+    <option value="6330">Jared Siegrist &#x28;Rank&#x3a; 28 - Cap&#x3a;5&#x29;</option>
+    <option value="6240">Cody Hughes &#x28;Rank&#x3a; 29 - Cap&#x3a;5&#x29;</option>
+    <option value="6406">Michael O&#x60;Malley &#x28;Rank&#x3a; 30 - Cap&#x3a;5&#x29;</option>
+    <option value="6215">Brandon Womack &#x28;Rank&#x3a; 31 - Cap&#x3a;5&#x29;</option>
+    <option value="6391">Mason Eaglin &#x28;Rank&#x3a; 32 - Cap&#x3a;5&#x29;</option>
+    <option value="6434">Phillip Spadafora &#x28;Rank&#x3a; 33 - Cap&#x3a;5&#x29;</option>
+</select></td></tr>
+		<tr>
+			<td style="width:10%;text-align:center;">141</td>
+			<td style="width:40%;"><select name="weightClass3" id="weightClass3" style="width:90%;"  onchange="javascript:setCurrentSalaryCap();" >
+<option id="0" value="0">-- Select 141 --</option>    <option value="6385">Luke Pletcher &#x28;Rank&#x3a; 1 - Cap&#x3a;196&#x29;</option>
+    <option value="6419">Nick Lee &#x28;Rank&#x3a; 2 - Cap&#x3a;148&#x29;</option>
+    <option value="6438">Real Woods &#x28;Rank&#x3a; 3 - Cap&#x3a;139&#x29;</option>
+    <option value="6307">Ian Parker &#x28;Rank&#x3a; 4 - Cap&#x3a;129&#x29;</option>
+    <option value="6232">Chad Red &#x28;Rank&#x3a; 5 - Cap&#x3a;117&#x29;</option>
+    <option value="6267">Dom Demas &#x28;Rank&#x3a; 6 - Cap&#x3a;107&#x29;</option>
+    <option value="6400">Max Murin &#x28;Rank&#x3a; 7 - Cap&#x3a;93&#x29;</option>
+    <option value="6410">Mitch McKee &#x28;Rank&#x3a; 8 - Cap&#x3a;87&#x29;</option>
+    <option value="6490">Tristan Moran &#x28;Rank&#x3a; 9 - Cap&#x3a;78&#x29;</option>
+    <option value="6356">Joshua Heil &#x28;Rank&#x3a; 10 - Cap&#x3a;71&#x29;</option>
+    <option value="6507">Zachary Sherman &#x28;Rank&#x3a; 11 - Cap&#x3a;59&#x29;</option>
+    <option value="6470">Tariq Wilson &#x28;Rank&#x3a; 12 - Cap&#x3a;45&#x29;</option>
+    <option value="6270">Dresden Simon &#x28;Rank&#x3a; 13 - Cap&#x3a;38&#x29;</option>
+    <option value="6274">Dusty Hone &#x28;Rank&#x3a; 14 - Cap&#x3a;31&#x29;</option>
+    <option value="6402">Michael Blockhus &#x28;Rank&#x3a; 15 - Cap&#x3a;26&#x29;</option>
+    <option value="6411">Mitch Moore &#x28;Rank&#x3a; 16 - Cap&#x3a;10&#x29;</option>
+    <option value="6276">Dylan Duncan &#x28;Rank&#x3a; 17 - Cap&#x3a;10&#x29;</option>
+    <option value="6295">Grant Leeth &#x28;Rank&#x3a; 18 - Cap&#x3a;10&#x29;</option>
+    <option value="6285">Evan Cheek &#x28;Rank&#x3a; 19 - Cap&#x3a;10&#x29;</option>
+    <option value="6456">Shakur Laney &#x28;Rank&#x3a; 20 - Cap&#x3a;10&#x29;</option>
+    <option value="6374">Kyle Shoop &#x28;Rank&#x3a; 21 - Cap&#x3a;5&#x29;</option>
+    <option value="6269">Doug Zapf &#x28;Rank&#x3a; 22 - Cap&#x3a;5&#x29;</option>
+    <option value="6448">Sa&#x60;Derian Perry &#x28;Rank&#x3a; 23 - Cap&#x3a;5&#x29;</option>
+    <option value="6241">Cody Trybus &#x28;Rank&#x3a; 24 - Cap&#x3a;5&#x29;</option>
+    <option value="6266">DJ Lloren &#x28;Rank&#x3a; 25 - Cap&#x3a;5&#x29;</option>
+    <option value="6275">Dylan Droegemueller &#x28;Rank&#x3a; 26 - Cap&#x3a;5&#x29;</option>
+    <option value="6243">Cole Matthews &#x28;Rank&#x3a; 27 - Cap&#x3a;5&#x29;</option>
+    <option value="6393">Matt Kazimir &#x28;Rank&#x3a; 28 - Cap&#x3a;5&#x29;</option>
+    <option value="6449">Salvatore Profaci &#x28;Rank&#x3a; 29 - Cap&#x3a;5&#x29;</option>
+    <option value="6422">Noah Baughman &#x28;Rank&#x3a; 30 - Cap&#x3a;5&#x29;</option>
+    <option value="6296">Grant Willits &#x28;Rank&#x3a; 31 - Cap&#x3a;5&#x29;</option>
+    <option value="6426">Parker Filius &#x28;Rank&#x3a; 32 - Cap&#x3a;5&#x29;</option>
+    <option value="6447">Ryan Pomrinca &#x28;Rank&#x3a; 33 - Cap&#x3a;5&#x29;</option>
+</select></td>
+			<td style="width:10%;text-align:center;">184</td>
+			<td style="width:40%;"><select name="weightClass8" id="weightClass8" style="width:90%;"  onchange="javascript:setCurrentSalaryCap();" >
+<option id="0" value="0">-- Select 184 --</option>    <option value="6474">Taylor Lujan &#x28;Rank&#x3a; 1 - Cap&#x3a;196&#x29;</option>
+    <option value="6304">Hunter Bolen &#x28;Rank&#x3a; 2 - Cap&#x3a;148&#x29;</option>
+    <option value="6486">Trent Hidlay &#x28;Rank&#x3a; 3 - Cap&#x3a;139&#x29;</option>
+    <option value="6382">Lou Deprez &#x28;Rank&#x3a; 4 - Cap&#x3a;129&#x29;</option>
+    <option value="6179">Aaron Brooks &#x28;Rank&#x3a; 5 - Cap&#x3a;117&#x29;</option>
+    <option value="6420">Nino Bonaccorsi &#x28;Rank&#x3a; 6 - Cap&#x3a;107&#x29;</option>
+    <option value="6227">Cameron Caffey &#x28;Rank&#x3a; 7 - Cap&#x3a;93&#x29;</option>
+    <option value="6194">Andrew Morgan &#x28;Rank&#x3a; 8 - Cap&#x3a;87&#x29;</option>
+    <option value="6475">Taylor Venz &#x28;Rank&#x3a; 9 - Cap&#x3a;78&#x29;</option>
+    <option value="6180">Abe Assad &#x28;Rank&#x3a; 10 - Cap&#x3a;71&#x29;</option>
+    <option value="6197">Anthony Montalvo &#x28;Rank&#x3a; 11 - Cap&#x3a;59&#x29;</option>
+    <option value="6504">Zach Carlson &#x28;Rank&#x3a; 12 - Cap&#x3a;45&#x29;</option>
+    <option value="6235">Chris Weiler &#x28;Rank&#x3a; 13 - Cap&#x3a;38&#x29;</option>
+    <option value="6442">Rocky Jordan &#x28;Rank&#x3a; 14 - Cap&#x3a;31&#x29;</option>
+    <option value="6397">Matthew Waddell &#x28;Rank&#x3a; 15 - Cap&#x3a;26&#x29;</option>
+    <option value="6466">Tanner Harvey &#x28;Rank&#x3a; 16 - Cap&#x3a;10&#x29;</option>
+    <option value="6424">Noah Stewart &#x28;Rank&#x3a; 17 - Cap&#x3a;10&#x29;</option>
+    <option value="6219">Brit Wilson &#x28;Rank&#x3a; 18 - Cap&#x3a;10&#x29;</option>
+    <option value="6503">Zach Braunagel &#x28;Rank&#x3a; 19 - Cap&#x3a;10&#x29;</option>
+    <option value="6278">Dylan Wisman &#x28;Rank&#x3a; 20 - Cap&#x3a;10&#x29;</option>
+    <option value="6343">Johnny Sebastian &#x28;Rank&#x3a; 21 - Cap&#x3a;5&#x29;</option>
+    <option value="6210">Billy Janzer &#x28;Rank&#x3a; 22 - Cap&#x3a;5&#x29;</option>
+    <option value="6425">Owen Webster &#x28;Rank&#x3a; 23 - Cap&#x3a;5&#x29;</option>
+    <option value="6488">Trevor Allard &#x28;Rank&#x3a; 24 - Cap&#x3a;5&#x29;</option>
+    <option value="6388">Marcus Coleman &#x28;Rank&#x3a; 25 - Cap&#x3a;5&#x29;</option>
+    <option value="6484">Travis Stefanik &#x28;Rank&#x3a; 26 - Cap&#x3a;5&#x29;</option>
+    <option value="6399">Max Lyon &#x28;Rank&#x3a; 27 - Cap&#x3a;5&#x29;</option>
+    <option value="6181">Alan Clothier &#x28;Rank&#x3a; 28 - Cap&#x3a;5&#x29;</option>
+    <option value="6345">Jonathan Loew &#x28;Rank&#x3a; 29 - Cap&#x3a;5&#x29;</option>
+    <option value="6336">Jelani Embree &#x28;Rank&#x3a; 30 - Cap&#x3a;5&#x29;</option>
+    <option value="6472">Tate Samuelson &#x28;Rank&#x3a; 31 - Cap&#x3a;5&#x29;</option>
+    <option value="6199">Antonio Agee &#x28;Rank&#x3a; 32 - Cap&#x3a;5&#x29;</option>
+    <option value="6355">Josh Loomer &#x28;Rank&#x3a; 33 - Cap&#x3a;5&#x29;</option>
+</select></td></tr>
+		<tr>
+			<td style="width:10%;text-align:center;">149</td>
+			<td style="width:40%;"><select name="weightClass4" id="weightClass4" style="width:90%;"  onchange="javascript:setCurrentSalaryCap();" >
+<option id="0" value="0">-- Select 149 --</option>    <option value="6428">Pat Lugo &#x28;Rank&#x3a; 1 - Cap&#x3a;196&#x29;</option>
+    <option value="6451">Sammy Sasso &#x28;Rank&#x3a; 2 - Cap&#x3a;148&#x29;</option>
+    <option value="6203">Austin O&#x60;Connor &#x28;Rank&#x3a; 3 - Cap&#x3a;139&#x29;</option>
+    <option value="6220">Brock Mauller &#x28;Rank&#x3a; 4 - Cap&#x3a;129&#x29;</option>
+    <option value="6396">Matthew Kolodzik &#x28;Rank&#x3a; 5 - Cap&#x3a;117&#x29;</option>
+    <option value="6211">Boo Lewallen &#x28;Rank&#x3a; 6 - Cap&#x3a;107&#x29;</option>
+    <option value="6216">Brayton Lee &#x28;Rank&#x3a; 7 - Cap&#x3a;93&#x29;</option>
+    <option value="6332">Jarrett Degen &#x28;Rank&#x3a; 8 - Cap&#x3a;87&#x29;</option>
+    <option value="6365">Kanen Storr &#x28;Rank&#x3a; 9 - Cap&#x3a;78&#x29;</option>
+    <option value="6303">Henry Pohlmeyer &#x28;Rank&#x3a; 10 - Cap&#x3a;71&#x29;</option>
+    <option value="6221">Brock Zacherl &#x28;Rank&#x3a; 11 - Cap&#x3a;59&#x29;</option>
+    <option value="6246">Collin Purinton &#x28;Rank&#x3a; 12 - Cap&#x3a;45&#x29;</option>
+    <option value="6401">Max Thomsen &#x28;Rank&#x3a; 13 - Cap&#x3a;38&#x29;</option>
+    <option value="6189">Andrew Alirez &#x28;Rank&#x3a; 14 - Cap&#x3a;31&#x29;</option>
+    <option value="6300">Griffin Parriott &#x28;Rank&#x3a; 15 - Cap&#x3a;26&#x29;</option>
+    <option value="6370">Kizhan Clarke &#x28;Rank&#x3a; 16 - Cap&#x3a;10&#x29;</option>
+    <option value="6331">Jarod Verkleeren &#x28;Rank&#x3a; 17 - Cap&#x3a;10&#x29;</option>
+    <option value="6346">Jonathan Millner &#x28;Rank&#x3a; 18 - Cap&#x3a;10&#x29;</option>
+    <option value="6247">Colston DiBlasi &#x28;Rank&#x3a; 19 - Cap&#x3a;10&#x29;</option>
+    <option value="6293">Graham Rooks &#x28;Rank&#x3a; 20 - Cap&#x3a;10&#x29;</option>
+    <option value="6242">Cole Martin &#x28;Rank&#x3a; 21 - Cap&#x3a;5&#x29;</option>
+    <option value="6500">Yahya Thomas &#x28;Rank&#x3a; 22 - Cap&#x3a;5&#x29;</option>
+    <option value="6223">Bryce Andonian &#x28;Rank&#x3a; 23 - Cap&#x3a;5&#x29;</option>
+    <option value="6469">Tanner Smith &#x28;Rank&#x3a; 24 - Cap&#x3a;5&#x29;</option>
+    <option value="6298">Greg Gaxiola &#x28;Rank&#x3a; 25 - Cap&#x3a;5&#x29;</option>
+    <option value="6329">Jared Prince &#x28;Rank&#x3a; 26 - Cap&#x3a;5&#x29;</option>
+    <option value="6182">Alec Hagan &#x28;Rank&#x3a; 27 - Cap&#x3a;5&#x29;</option>
+    <option value="6305">Hunter Richard &#x28;Rank&#x3a; 28 - Cap&#x3a;5&#x29;</option>
+    <option value="6444">Russell Rohlfing &#x28;Rank&#x3a; 29 - Cap&#x3a;5&#x29;</option>
+    <option value="6495">Tyshawn Williams &#x28;Rank&#x3a; 30 - Cap&#x3a;5&#x29;</option>
+    <option value="6339">Jimmy Hoffman &#x28;Rank&#x3a; 31 - Cap&#x3a;5&#x29;</option>
+    <option value="6184">Alex Hrisopoulos &#x28;Rank&#x3a; 32 - Cap&#x3a;5&#x29;</option>
+    <option value="6454">Selwyn Porter &#x28;Rank&#x3a; 33 - Cap&#x3a;5&#x29;</option>
+</select></td>
+			<td style="width:10%;text-align:center;">197</td>
+			<td style="width:40%;"><select name="weightClass9" id="weightClass9" style="width:90%;"  onchange="javascript:setCurrentSalaryCap();" >
+<option id="0" value="0">-- Select 197 --</option>    <option value="6371">Kollin Moore &#x28;Rank&#x3a; 1 - Cap&#x3a;196&#x29;</option>
+    <option value="6421">Noah Adams &#x28;Rank&#x3a; 2 - Cap&#x3a;148&#x29;</option>
+    <option value="6282">Eric Schultz &#x28;Rank&#x3a; 3 - Cap&#x3a;139&#x29;</option>
+    <option value="6206">Ben Darmstadt &#x28;Rank&#x3a; 4 - Cap&#x3a;129&#x29;</option>
+    <option value="6318">Jacob Warner &#x28;Rank&#x3a; 5 - Cap&#x3a;117&#x29;</option>
+    <option value="6335">Jay Aiello &#x28;Rank&#x3a; 6 - Cap&#x3a;107&#x29;</option>
+    <option value="6429">Patrick Brucki &#x28;Rank&#x3a; 7 - Cap&#x3a;93&#x29;</option>
+    <option value="6373">Kordell Norfleet &#x28;Rank&#x3a; 8 - Cap&#x3a;87&#x29;</option>
+    <option value="6236">Christian Brunner &#x28;Rank&#x3a; 9 - Cap&#x3a;78&#x29;</option>
+    <option value="6468">Tanner Sloan &#x28;Rank&#x3a; 10 - Cap&#x3a;71&#x29;</option>
+    <option value="6297">Greg Bulsak &#x28;Rank&#x3a; 11 - Cap&#x3a;59&#x29;</option>
+    <option value="6414">Nathan Traxler &#x28;Rank&#x3a; 12 - Cap&#x3a;45&#x29;</option>
+    <option value="6478">Thomas Lane &#x28;Rank&#x3a; 13 - Cap&#x3a;38&#x29;</option>
+    <option value="6384">Lucas Davison &#x28;Rank&#x3a; 14 - Cap&#x3a;31&#x29;</option>
+    <option value="6283">Ethan Laird &#x28;Rank&#x3a; 15 - Cap&#x3a;26&#x29;</option>
+    <option value="6250">Dakota Geer &#x28;Rank&#x3a; 16 - Cap&#x3a;10&#x29;</option>
+    <option value="6457">Shakur Rasheed &#x28;Rank&#x3a; 17 - Cap&#x3a;10&#x29;</option>
+    <option value="6326">Jake Woodley &#x28;Rank&#x3a; 18 - Cap&#x3a;10&#x29;</option>
+    <option value="6349">Jordan Pagano &#x28;Rank&#x3a; 19 - Cap&#x3a;10&#x29;</option>
+    <option value="6273">Drew Phipps &#x28;Rank&#x3a; 20 - Cap&#x3a;10&#x29;</option>
+    <option value="6323">Jake Jakobsen &#x28;Rank&#x3a; 21 - Cap&#x3a;5&#x29;</option>
+    <option value="6462">Stephen Buchanan &#x28;Rank&#x3a; 22 - Cap&#x3a;5&#x29;</option>
+    <option value="6317">Jacob Seely &#x28;Rank&#x3a; 23 - Cap&#x3a;5&#x29;</option>
+    <option value="6358">JT Brown &#x28;Rank&#x3a; 24 - Cap&#x3a;5&#x29;</option>
+    <option value="6498">Wyatt Koelling &#x28;Rank&#x3a; 25 - Cap&#x3a;5&#x29;</option>
+    <option value="6314">Jackson Striggow &#x28;Rank&#x3a; 26 - Cap&#x3a;5&#x29;</option>
+    <option value="6306">Hunter Ritter &#x28;Rank&#x3a; 27 - Cap&#x3a;5&#x29;</option>
+    <option value="6289">Gage Braun &#x28;Rank&#x3a; 28 - Cap&#x3a;5&#x29;</option>
+    <option value="6375">Landon Pelham &#x28;Rank&#x3a; 29 - Cap&#x3a;5&#x29;</option>
+    <option value="6244">Cole Urbas &#x28;Rank&#x3a; 30 - Cap&#x3a;5&#x29;</option>
+    <option value="6249">Cordell Eaton &#x28;Rank&#x3a; 31 - Cap&#x3a;5&#x29;</option>
+    <option value="6258">Demazio Samuel &#x28;Rank&#x3a; 32 - Cap&#x3a;5&#x29;</option>
+    <option value="6222">Bryan McLaughlin &#x28;Rank&#x3a; 33 - Cap&#x3a;5&#x29;</option>
+</select></td></tr>
+		<tr>
+			<td style="width:10%;text-align:center;">157</td>
+			<td style="width:40%;"><select name="weightClass5" id="weightClass5" style="width:90%;"  onchange="javascript:setCurrentSalaryCap();" >
+<option id="0" value="0">-- Select 157 --</option>    <option value="6446">Ryan Deakin &#x28;Rank&#x3a; 1 - Cap&#x3a;196&#x29;</option>
+    <option value="6302">Hayden Hidlay &#x28;Rank&#x3a; 2 - Cap&#x3a;148&#x29;</option>
+    <option value="6254">David Carr &#x28;Rank&#x3a; 3 - Cap&#x3a;139&#x29;</option>
+    <option value="6338">Jesse Dellavecchia &#x28;Rank&#x3a; 4 - Cap&#x3a;129&#x29;</option>
+    <option value="6436">Quincy Monday &#x28;Rank&#x3a; 5 - Cap&#x3a;117&#x29;</option>
+    <option value="6366">Kendall Coleman &#x28;Rank&#x3a; 6 - Cap&#x3a;107&#x29;</option>
+    <option value="6354">Josh Humphreys &#x28;Rank&#x3a; 7 - Cap&#x3a;93&#x29;</option>
+    <option value="6320">Jacori Teemer &#x28;Rank&#x3a; 8 - Cap&#x3a;87&#x29;</option>
+    <option value="6364">Kaleb Young &#x28;Rank&#x3a; 9 - Cap&#x3a;78&#x29;</option>
+    <option value="6390">Markus Hartman &#x28;Rank&#x3a; 10 - Cap&#x3a;71&#x29;</option>
+    <option value="6376">Larry Early &#x28;Rank&#x3a; 11 - Cap&#x3a;59&#x29;</option>
+    <option value="6499">Wyatt Sheets &#x28;Rank&#x3a; 12 - Cap&#x3a;45&#x29;</option>
+    <option value="6497">Will Lewan &#x28;Rank&#x3a; 13 - Cap&#x3a;38&#x29;</option>
+    <option value="6432">Peyton Robb &#x28;Rank&#x3a; 14 - Cap&#x3a;31&#x29;</option>
+    <option value="6328">Jared Franek &#x28;Rank&#x3a; 15 - Cap&#x3a;26&#x29;</option>
+    <option value="6333">Jarrett Jacques &#x28;Rank&#x3a; 16 - Cap&#x3a;10&#x29;</option>
+    <option value="6362">Justin Thomas &#x28;Rank&#x3a; 17 - Cap&#x3a;10&#x29;</option>
+    <option value="6324">Jake Tucker &#x28;Rank&#x3a; 18 - Cap&#x3a;10&#x29;</option>
+    <option value="6202">Austin Headlee &#x28;Rank&#x3a; 19 - Cap&#x3a;10&#x29;</option>
+    <option value="6463">Taleb Rahmani &#x28;Rank&#x3a; 20 - Cap&#x3a;10&#x29;</option>
+    <option value="6361">Justin Ruffin &#x28;Rank&#x3a; 21 - Cap&#x3a;5&#x29;</option>
+    <option value="6381">Logan Parks &#x28;Rank&#x3a; 22 - Cap&#x3a;5&#x29;</option>
+    <option value="6502">Zac Carson &#x28;Rank&#x3a; 23 - Cap&#x3a;5&#x29;</option>
+    <option value="6281">Eric Barone &#x28;Rank&#x3a; 24 - Cap&#x3a;5&#x29;</option>
+    <option value="6395">Matt Zovistoski &#x28;Rank&#x3a; 25 - Cap&#x3a;5&#x29;</option>
+    <option value="6205">BC LaPrade &#x28;Rank&#x3a; 26 - Cap&#x3a;5&#x29;</option>
+    <option value="6319">Jacob Wright &#x28;Rank&#x3a; 27 - Cap&#x3a;5&#x29;</option>
+    <option value="6360">Justin McCoy &#x28;Rank&#x3a; 28 - Cap&#x3a;5&#x29;</option>
+    <option value="6493">Tyler Eischens &#x28;Rank&#x3a; 29 - Cap&#x3a;5&#x29;</option>
+    <option value="6187">Alexander Klucker &#x28;Rank&#x3a; 30 - Cap&#x3a;5&#x29;</option>
+    <option value="6408">Mike Van Brill &#x28;Rank&#x3a; 31 - Cap&#x3a;5&#x29;</option>
+    <option value="6321">Jahi Jones &#x28;Rank&#x3a; 32 - Cap&#x3a;5&#x29;</option>
+    <option value="6183">Alex Carida &#x28;Rank&#x3a; 33 - Cap&#x3a;5&#x29;</option>
+</select></td>
+			<td style="width:10%;text-align:center;">285</td>
+			<td style="width:40%;"><select name="weightClass10" id="weightClass10" style="width:90%;"  onchange="javascript:setCurrentSalaryCap();" >
+<option id="0" value="0">-- Select 285 --</option>    <option value="6288">Gable Steveson &#x28;Rank&#x3a; 1 - Cap&#x3a;196&#x29;</option>
+    <option value="6392">Mason Parris &#x28;Rank&#x3a; 2 - Cap&#x3a;148&#x29;</option>
+    <option value="6482">Tony Cassioppi &#x28;Rank&#x3a; 3 - Cap&#x3a;139&#x29;</option>
+    <option value="6394">Matt Stencel &#x28;Rank&#x3a; 4 - Cap&#x3a;129&#x29;</option>
+    <option value="6465">Tanner Hall &#x28;Rank&#x3a; 5 - Cap&#x3a;117&#x29;</option>
+    <option value="6487">Trent Hillger &#x28;Rank&#x3a; 6 - Cap&#x3a;107&#x29;</option>
+    <option value="6350">Jordan Wood &#x28;Rank&#x3a; 7 - Cap&#x3a;93&#x29;</option>
+    <option value="6259">Demetrius Thomas &#x28;Rank&#x3a; 8 - Cap&#x3a;87&#x29;</option>
+    <option value="6501">Yaraslau Slavikouski &#x28;Rank&#x3a; 9 - Cap&#x3a;78&#x29;</option>
+    <option value="6471">Tate Orndorff &#x28;Rank&#x3a; 10 - Cap&#x3a;71&#x29;</option>
+    <option value="6353">Josh Hokit &#x28;Rank&#x3a; 11 - Cap&#x3a;59&#x29;</option>
+    <option value="6218">Brian Andrews &#x28;Rank&#x3a; 12 - Cap&#x3a;45&#x29;</option>
+    <option value="6291">Gannon Gremmel &#x28;Rank&#x3a; 13 - Cap&#x3a;38&#x29;</option>
+    <option value="6337">Jere Heino &#x28;Rank&#x3a; 14 - Cap&#x3a;31&#x29;</option>
+    <option value="6229">Carter Isley &#x28;Rank&#x3a; 15 - Cap&#x3a;26&#x29;</option>
+    <option value="6255">David Jensen &#x28;Rank&#x3a; 16 - Cap&#x3a;10&#x29;</option>
+    <option value="6251">Dalton Robertson &#x28;Rank&#x3a; 17 - Cap&#x3a;10&#x29;</option>
+    <option value="6230">Cary Miller &#x28;Rank&#x3a; 18 - Cap&#x3a;10&#x29;</option>
+    <option value="6292">Gary Traub &#x28;Rank&#x3a; 19 - Cap&#x3a;10&#x29;</option>
+    <option value="6260">Deonte Wilson &#x28;Rank&#x3a; 20 - Cap&#x3a;10&#x29;</option>
+    <option value="6208">Ben Sullivan &#x28;Rank&#x3a; 21 - Cap&#x3a;5&#x29;</option>
+    <option value="6342">John Borst &#x28;Rank&#x3a; 22 - Cap&#x3a;5&#x29;</option>
+    <option value="6213">Brandon Metz &#x28;Rank&#x3a; 23 - Cap&#x3a;5&#x29;</option>
+    <option value="6437">Quinn Miller &#x28;Rank&#x3a; 24 - Cap&#x3a;5&#x29;</option>
+    <option value="6344">Jon Spaulding &#x28;Rank&#x3a; 25 - Cap&#x3a;5&#x29;</option>
+    <option value="6479">Thomas Penola &#x28;Rank&#x3a; 26 - Cap&#x3a;5&#x29;</option>
+    <option value="6217">Brendan Furman &#x28;Rank&#x3a; 27 - Cap&#x3a;5&#x29;</option>
+    <option value="6347">Jordan Earnest &#x28;Rank&#x3a; 28 - Cap&#x3a;5&#x29;</option>
+    <option value="6191">Andrew Gunning &#x28;Rank&#x3a; 29 - Cap&#x3a;5&#x29;</option>
+    <option value="6506">Zachary Knighton-Ward &#x28;Rank&#x3a; 30 - Cap&#x3a;5&#x29;</option>
+    <option value="6445">Ryan Cloud &#x28;Rank&#x3a; 31 - Cap&#x3a;5&#x29;</option>
+    <option value="6492">Tyler Bagoly &#x28;Rank&#x3a; 32 - Cap&#x3a;5&#x29;</option>
+    <option value="6398">Max Ihry &#x28;Rank&#x3a; 33 - Cap&#x3a;5&#x29;</option>
+</select></td></tr>
+
+		<tr><td colspan="4" style="text-align:center;"><span id="totalCapCost" style="color:green;font-weight:bold;font-size:20px;">Current Salary Cap:&nbsp;</span></td></Tr>
+		<tr><th colspan="4" style="background-color:#375172;color:white; text-align:left;">Tiebreaker</th></tr>
+		<tr><th style="width:10%;text-align:center;">Team Champion</th><th style="width:10%;"><select name="tiebreakerTeamId" id="tiebreakerTeamId" style="width:90%;" >
+<option id="0" value="0">-- Select Team Champion --</option>    <option value="1">American</option>
+    <option value="2">Appalachian State</option>
+    <option value="3">Arizona State</option>
+    <option value="4">Army West Point</option>
+    <option value="5">Binghamton</option>
+    <option value="74">Bloomsburg</option>
+    <option value="6">Bucknell</option>
+    <option value="67">Buffalo</option>
+    <option value="73">Cal Poly</option>
+    <option value="7">Campbell</option>
+    <option value="8">Central Michigan</option>
+    <option value="9">Chattanooga</option>
+    <option value="10">Clarion</option>
+    <option value="57">Cleveland State</option>
+    <option value="58">Columbia</option>
+    <option value="11">Cornell</option>
+    <option value="12">CSU Bakersfield</option>
+    <option value="13">Drexel</option>
+    <option value="14">Duke</option>
+    <option value="16">Edinboro</option>
+    <option value="78">Fresno State</option>
+    <option value="61">George Mason</option>
+    <option value="62">Harvard</option>
+    <option value="63">Hofstra</option>
+    <option value="18">Illinois</option>
+    <option value="19">Indiana</option>
+    <option value="20">Iowa</option>
+    <option value="21">Iowa State</option>
+    <option value="64">Kent State</option>
+    <option value="22">Lehigh</option>
+    <option value="23">Lock Haven</option>
+    <option value="24">Maryland</option>
+    <option value="25">Michigan</option>
+    <option value="26">Michigan State</option>
+    <option value="27">Minnesota</option>
+    <option value="28">Missouri</option>
+    <option value="29">Navy</option>
+    <option value="30">Nebraska</option>
+    <option value="31">North Carolina</option>
+    <option value="32">North Carolina State</option>
+    <option value="33">North Dakota State</option>
+    <option value="34">Northern Colorado</option>
+    <option value="35">Northern Illinois</option>
+    <option value="36">Northern Iowa</option>
+    <option value="65">Northwestern</option>
+    <option value="37">Ohio</option>
+    <option value="38">Ohio State</option>
+    <option value="39">Oklahoma</option>
+    <option value="40">Oklahoma State</option>
+    <option value="41">Old Dominion</option>
+    <option value="42">Oregon State</option>
+    <option value="43">Penn</option>
+    <option value="44">Penn State</option>
+    <option value="45">Pittsburgh</option>
+    <option value="46">Princeton</option>
+    <option value="66">Purdue</option>
+    <option value="47">Rider</option>
+    <option value="48">Rutgers</option>
+    <option value="49">South Dakota State</option>
+    <option value="50">Southern Illinois Edwardsville</option>
+    <option value="51">Stanford</option>
+    <option value="68">The Citadel</option>
+    <option value="71">Utah Valley</option>
+    <option value="52">Virginia</option>
+    <option value="53">Virginia Tech</option>
+    <option value="72">VMI</option>
+    <option value="54">West Virginia</option>
+    <option value="55">Wisconsin</option>
+    <option value="56">Wyoming</option>
+</select></th><th style="vertical-align:top;width:10%;">Champion Score</th><th style="width:10%;text-align:left;"><input name="tiebreakerScore" id="tiebreakerScore"  type="text" style="width:100px; text-align:center;"  /> &nbsp;&nbsp;<input name="saveRosterButton" type="submit" value="     Save Roster     " id="saveRosterButton"  class="pure-button button-success"  /></th></tr>
+		
+		<tr><td colspan="4" style="text-align:center;">
+			<select name="importRoster" id="importRoster" style="width:400px;" >
+<option id="0" value="0">-- Select Roster to Import --</option></select>&nbsp;
+			<input name="importRosterButton" type="submit" value="Import Existing Roster" style="title='This button will copy one of your existing rosters over the selected roster';"  id="importRosterButton"  class="pure-button pure-button-primary"  /> <span  id="cf_tooltip_39397399053901">
+	
+	&nbsp;<img alt="" src="https://www.fantasygrade.com/assets/images/blackquestionmark.png" style="padding-left 10px;"/>
+ </span>&nbsp;&nbsp;
+			
+			
+		</td></tr>
+		<tr><td colspan="4"><input name="salaryCap" id="salaryCap"  type="text" value="1000" maxlength="50"  style="width:50px;visibility:hidden;height:0px;"  /><input name="lyid" id="lyid"  type="text" value="100819" maxlength="50"  style="width:50px;visibility:hidden;height:0px;"  /></td></tr>
+	</tbody>
+	</table>
+
+</td>
+
+</tr></table>
+</form>
+
+
+
+
+
+	</td>
+</tr>
+</table>
+
+</BODY>
+
+</HTML>
+
+ 
