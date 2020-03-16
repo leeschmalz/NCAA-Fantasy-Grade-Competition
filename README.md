@@ -32,3 +32,5 @@ A few things about these teams that lead me to believe the model has done relati
 3. The winning score the last 3 years for this competition were 155, 157, and 155. This leads me to believe that these teams (if the predictions are accurate) are in the ballpark of the best scoring teams.
 
 Sadly, I will not be able to play the competition this year as the tournament was cancelled due to COVID-19. I will have to wait until 2021 to see how it performs. Either way, this was a very fun project and I learned a ton completing it.
+
+note: The Plotly displays are not visible in the GitHub display of ipynb files. They are scatter plots of all wrestlers cap by predicted score with mouse over feature to see names of all wrestlers. The script will have to be compiled to see these outputs.
